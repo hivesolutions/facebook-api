@@ -46,12 +46,13 @@ class FacebookApp(appier.WebApp):
     def __init__(self):
         appier.App.__init__(self, name = "facebook")
 
-    @appier.route("/email", "GET")
-    def hello(self):
+    @appier.route("/details", "GET")
+    def details(self):
         url = self.ensure_api()
         if url: return self.redirect(url)
+        api = self.get_api()
         return dict(
-            message = "hello world"
+            email = api.email()
         )
 
     def ensure_api(self):

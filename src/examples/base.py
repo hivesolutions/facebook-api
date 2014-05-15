@@ -44,5 +44,6 @@ import facebook
 def get_api():
     return facebook.Api(
         client_id = appier.conf("FB_ID"),
-        client_secret = appier.conf("FB_SECRET")
+        client_secret = appier.conf("FB_SECRET"),
+        redirect_url = appier.conf("FB_REDIRECT_URL")
     )

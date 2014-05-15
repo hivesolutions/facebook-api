@@ -96,8 +96,7 @@ class Api(
         return self.request(
             appier.get,
             url,
-            params = kwargs,
-            auth_callback = self.auth_callback
+            params = kwargs
         )
 
     def post(self, url, token = True, data = None, data_j = None, data_m = None, **kwargs):
@@ -108,8 +107,7 @@ class Api(
             params = kwargs,
             data = data,
             data_j = data_j,
-            data_m = data_m,
-            auth_callback = self.auth_callback
+            data_m = data_m
         )
 
     def put(self, url, token = True, data = None, data_j = None, data_m = None, **kwargs):
@@ -120,8 +118,7 @@ class Api(
             params = kwargs,
             data = data,
             data_j = data_j,
-            data_m = data_m,
-            auth_callback = self.auth_callback
+            data_m = data_m
         )
 
     def delete(self, url, token = True, **kwargs):
@@ -129,8 +126,7 @@ class Api(
         return self.request(
             appier.delete,
             url,
-            params = kwargs,
-            auth_callback = self.auth_callback
+            params = kwargs
         )
 
     def get_access_token(self):
@@ -138,35 +134,6 @@ class Api(
         raise errors.OAuthAccessError(
             "No access token found must re-authorize"
         )
-
-    def auth_callback(self, params):
-        #@todo tenho de implementar aki o extend / re-request
-        # @coiso mergulho
-
-        if not self._has_mode(): raise errors.AccessError(
-            "Session expired or authentication issues"
-        )
-        self.session_id = None
-        session_id = self.get_session_id()
-        params["access_token"] = access_token
-
-    def login(self, username = None, password = None):
-        username = username or self.username
-        password = password or self.password
-        url = self.base_url + "omni/login.json"
-        contents = self.get(
-            url,
-            auth = False,
-            token = False,
-            username = username,
-            password = password
-        )
-        self.username = contents.get("username", None)
-        self.acl = contents.get("acl", None)
-        self.session_id = contents.get("session_id", None)
-        self.tokens = self.acl.keys()
-        self.trigger("auth", contents)
-        return self.session_id
 
     def oauth_autorize(self):
         url = "https://www.facebook.com/dialog/oauth"

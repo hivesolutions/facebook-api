@@ -44,9 +44,9 @@ from examples import base
 class FacebookApp(appier.WebApp):
 
     def __init__(self):
-        appier.App.__init__(self, name = "facebook")
+        appier.WebApp.__init__(self, name = "facebook")
 
-    @appier.route("/details", "GET")
+    @appier.route("/", "GET")
     def index(self):
         return self.details()
 
@@ -55,9 +55,8 @@ class FacebookApp(appier.WebApp):
         url = self.ensure_api()
         if url: return self.redirect(url)
         api = self.get_api()
-        return dict(
-            email = api.email()
-        )
+        user = api.self_user()
+        return user
 
     @appier.route("/oauth", "GET")
     def oauth(self):
@@ -66,7 +65,7 @@ class FacebookApp(appier.WebApp):
         access_token = api.oauth_access(code)
         self.session["fb.access_token"] = access_token
         return self.redirect(
-            self.url_for("index")
+            self.url_for("facebook.index")
         )
 
     def ensure_api(self):

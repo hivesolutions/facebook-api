@@ -39,6 +39,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import appier
 
+from facebook import user
 from facebook import errors
 
 BASE_URL = "https://graph.facebook.com/"
@@ -64,7 +65,8 @@ SCOPE = (
 scope string for the oauth value """
 
 class Api(
-    appier.Api
+    appier.Api,
+    user.UserApi
 ):
 
     def __init__(self, *args, **kwargs):
@@ -86,12 +88,11 @@ class Api(
 
         return result
 
-    def build_kwargs(self, kwargs, auth = True, token = False):
-        if auth: kwargs["session_id"] = self.get_session_id()
+    def build_kwargs(self, kwargs, token = True):
         if token: kwargs["access_token"] = self.get_access_token()
 
-    def get(self, url, auth = True, token = False, **kwargs):
-        self.build_kwargs(kwargs, auth = auth, token = token)
+    def get(self, url, token = True, **kwargs):
+        self.build_kwargs(kwargs, token = token)
         return self.request(
             appier.get,
             url,
@@ -99,8 +100,8 @@ class Api(
             auth_callback = self.auth_callback
         )
 
-    def post(self, url, auth = True, token = False, data = None, data_j = None, data_m = None, **kwargs):
-        self.build_kwargs(kwargs, auth = auth, token = token)
+    def post(self, url, token = True, data = None, data_j = None, data_m = None, **kwargs):
+        self.build_kwargs(kwargs, token = token)
         return self.request(
             appier.post,
             url,
@@ -111,8 +112,8 @@ class Api(
             auth_callback = self.auth_callback
         )
 
-    def put(self, url, auth = True, token = False, data = None, data_j = None, data_m = None, **kwargs):
-        self.build_kwargs(kwargs, auth = auth, token = token)
+    def put(self, url, token = True, data = None, data_j = None, data_m = None, **kwargs):
+        self.build_kwargs(kwargs, token = token)
         return self.request(
             appier.put,
             url,
@@ -123,18 +124,14 @@ class Api(
             auth_callback = self.auth_callback
         )
 
-    def delete(self, url, auth = True, token = False, **kwargs):
-        self.build_kwargs(kwargs, auth = auth, token = token)
+    def delete(self, url, token = True, **kwargs):
+        self.build_kwargs(kwargs, token = token)
         return self.request(
             appier.delete,
             url,
             params = kwargs,
             auth_callback = self.auth_callback
         )
-
-    def get_session_id(self):
-        if self.session_id: return self.session_id
-        return self.oauth_session()
 
     def get_access_token(self):
         if self.access_token: return self.access_token
@@ -143,6 +140,9 @@ class Api(
         )
 
     def auth_callback(self, params):
+        #@todo tenho de implementar aki o extend / re-request
+        # @coiso mergulho
+
         if not self._has_mode(): raise errors.AccessError(
             "Session expired or authentication issues"
         )
@@ -192,19 +192,8 @@ class Api(
             redirect_uri = self.redirect_url,
             code = code
         )
+        contents = contents.decode("utf-8")
+        contents = appier.parse_qs(contents)
         self.access_token = contents["access_token"]
         self.trigger("access_token", self.access_token)
         return self.access_token
-
-    def oauth_session(self):
-        url = self.base_url + "omni/oauth/start_session"
-        contents = self.get(url, auth = False, token = True)
-        self.username = contents.get("username", None)
-        self.acl = contents.get("acl", None)
-        self.session_id = contents.get("session_id", None)
-        self.tokens = self.acl.keys()
-        self.trigger("auth", contents)
-        return self.session_id
-
-    def _has_mode(self):
-        return self.mode == DIRECT_MODE or self.mode == OAUTH_MODE

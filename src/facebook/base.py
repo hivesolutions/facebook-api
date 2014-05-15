@@ -41,6 +41,10 @@ import appier
 
 from facebook import errors
 
+BASE_URL = "https://graph.facebook.com/"
+""" The default base url to be used when no other
+base url value is provided to the constructor """
+
 CLIENT_ID = None
 """ The default value to be used for the client id
 in case no client id is provided to the api client """
@@ -54,13 +58,9 @@ REDIRECT_URL = "http://localhost:8080/oauth"
 in case none is provided to the api (client) """
 
 SCOPE = (
-    "base",
-    "base.user",
-    "base.admin",
-    "foundation.store.list",
-    "foundation.web.subscribe"
+    "email",
 )
-""" The list of permission to be used to create the
+""" The list of permissions to be used to create the
 scope string for the oauth value """
 
 class Api(
@@ -69,6 +69,7 @@ class Api(
 
     def __init__(self, *args, **kwargs):
         appier.Api.__init__(self, *args, **kwargs)
+        self.base_url = kwargs.get("base_url", BASE_URL)
         self.client_id = kwargs.get("client_id", CLIENT_ID)
         self.client_secret = kwargs.get("client_secret", CLIENT_SECRET)
         self.redirect_url = kwargs.get("redirect_url", REDIRECT_URL)
@@ -76,8 +77,7 @@ class Api(
         self.access_token = kwargs.get("access_token", None)
 
     def request(self, method, *args, **kwargs):
-        try:
-            result = method(*args, **kwargs)
+        try: result = method(*args, **kwargs)
         except appier.exceptions.HTTPError:
             raise errors.OAuthAccessError(
                 "Problems using access token found must re-authorize"
@@ -148,7 +148,7 @@ class Api(
         )
         self.session_id = None
         session_id = self.get_session_id()
-        params["session_id"] = session_id
+        params["access_token"] = access_token
 
     def login(self, username = None, password = None):
         username = username or self.username
@@ -169,20 +169,19 @@ class Api(
         return self.session_id
 
     def oauth_autorize(self):
-        url = self.base_url + self.prefix + "oauth/authorize"
+        url = "https://www.facebook.com/dialog/oauth"
         values = dict(
             client_id = self.client_id,
             redirect_uri = self.redirect_url,
             response_type = "code",
             scope = " ".join(self.scope)
         )
-
         data = appier.urlencode(values)
         url = url + "?" + data
         return url
 
     def oauth_access(self, code):
-        url = self.base_url + "omni/oauth/access_token"
+        url = self.base_url + "oauth/access_token"
         contents = self.post(
             url,
             auth = False,
@@ -207,13 +206,5 @@ class Api(
         self.trigger("auth", contents)
         return self.session_id
 
-    def ping(self):
-        return self.self_user()
-
     def _has_mode(self):
         return self.mode == DIRECT_MODE or self.mode == OAUTH_MODE
-
-    def _get_mode(self):
-        if self.username and self.password: return DIRECT_MODE
-        elif self.client_id and self.client_secret: return OAUTH_MODE
-        return UNSET_MODE

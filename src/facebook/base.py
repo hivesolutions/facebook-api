@@ -147,17 +147,34 @@ class Api(
         url = url + "?" + data
         return url
 
-    def oauth_access(self, code):
+    def oauth_access(self, code, long = True):
         url = self.base_url + "oauth/access_token"
         contents = self.post(
             url,
-            auth = False,
             token = False,
             client_id = self.client_id,
             client_secret = self.client_secret,
             grant_type = "authorization_code",
             redirect_uri = self.redirect_url,
             code = code
+        )
+        contents = contents.decode("utf-8")
+        contents = appier.parse_qs(contents)
+        self.access_token = contents["access_token"]
+        self.trigger("access_token", self.access_token)
+        if long: self.access_token = self.oauth_long_lived(self.access_token)
+        return self.access_token
+
+    def oauth_long_lived(self, short_token):
+        url = self.base_url + "oauth/access_token"
+        contents = self.post(
+            url,
+            token = False,
+            client_id = self.client_id,
+            client_secret = self.client_secret,
+            grant_type = "fb_exchange_token",
+            redirect_uri = self.redirect_url,
+            fb_exchange_token = short_token,
         )
         contents = contents.decode("utf-8")
         contents = appier.parse_qs(contents)

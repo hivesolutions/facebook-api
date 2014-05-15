@@ -53,12 +53,18 @@ class FacebookApp(appier.WebApp):
         return dict(
             message = "hello world"
         )
-        
+
     def ensure_api(self):
         access_token = self.session.get("fb.access_token", None)
         if access_token: return
         api = base.get_api()
         return api.oauth_autorize()
+
+    def get_api(self):
+        access_token = self.session and self.session.get("fb.access_token", None)
+        api = base.get_api()
+        api.access_token = access_token
+        return api
 
 if __name__ == "__main__":
     app = FacebookApp()

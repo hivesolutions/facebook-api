@@ -135,7 +135,7 @@ class Api(
             "No access token found must re-authorize"
         )
 
-    def oauth_autorize(self):
+    def oauth_autorize(self, state = None):
         url = "https://www.facebook.com/dialog/oauth"
         values = dict(
             client_id = self.client_id,
@@ -143,6 +143,7 @@ class Api(
             response_type = "code",
             scope = " ".join(self.scope)
         )
+        if state: values["state"] = state
         data = appier.urlencode(values)
         url = url + "?" + data
         return url

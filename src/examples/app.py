@@ -50,10 +50,10 @@ class FacebookApp(appier.WebApp):
 
     @appier.route("/", "GET")
     def index(self):
-        return self.details()
+        return self.me()
 
-    @appier.route("/details", "GET")
-    def details(self):
+    @appier.route("/me", "GET")
+    def me(self):
         url = self.ensure_api()
         if url: return self.redirect(url)
         api = self.get_api()

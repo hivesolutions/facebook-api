@@ -47,12 +47,26 @@ class FacebookApp(appier.WebApp):
         appier.App.__init__(self, name = "facebook")
 
     @appier.route("/details", "GET")
+    def index(self):
+        return self.details()
+
+    @appier.route("/details", "GET")
     def details(self):
         url = self.ensure_api()
         if url: return self.redirect(url)
         api = self.get_api()
         return dict(
             email = api.email()
+        )
+
+    @appier.route("/oauth", "GET")
+    def oauth(self):
+        code = self.field("code")
+        api = self.get_api()
+        access_token = api.oauth_access(code)
+        self.session["fb.access_token"] = access_token
+        return self.redirect(
+            self.url_for("index")
         )
 
     def ensure_api(self):

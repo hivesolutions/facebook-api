@@ -160,7 +160,7 @@ class Api(
         )
         contents = contents.decode("utf-8")
         contents = appier.parse_qs(contents)
-        self.access_token = contents["access_token"]
+        self.access_token = contents["access_token"][0]
         self.trigger("access_token", self.access_token)
         if long: self.access_token = self.oauth_long_lived(self.access_token)
         return self.access_token
@@ -178,6 +178,6 @@ class Api(
         )
         contents = contents.decode("utf-8")
         contents = appier.parse_qs(contents)
-        self.access_token = contents["access_token"]
+        self.access_token = contents["access_token"][0]
         self.trigger("access_token", self.access_token)
         return self.access_token

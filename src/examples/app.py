@@ -39,6 +39,8 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import appier
 
+import facebook
+
 from examples import base
 
 class FacebookApp(appier.WebApp):
@@ -64,6 +66,13 @@ class FacebookApp(appier.WebApp):
         api = self.get_api()
         access_token = api.oauth_access(code)
         self.session["fb.access_token"] = access_token
+        return self.redirect(
+            self.url_for("facebook.index")
+        )
+
+    @appier.exception_handler(facebook.OAuthAccessError)
+    def oauth_error(self, error):
+        if "fb.access_token" in self.session: del self.session["fb.access_token"]
         return self.redirect(
             self.url_for("facebook.index")
         )

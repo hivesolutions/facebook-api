@@ -77,7 +77,7 @@ class Api(
         self.scope = kwargs.get("scope", SCOPE)
         self.access_token = kwargs.get("access_token", None)
 
-    def oauth_autorize(self, state = None):
+    def oauth_authorize(self, state = None):
         url = "https://www.facebook.com/dialog/oauth"
         values = dict(
             client_id = self.client_id,

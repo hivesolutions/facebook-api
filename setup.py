@@ -39,7 +39,7 @@ import setuptools
 
 setuptools.setup(
     name = "facebook_api",
-    version = "0.1.2",
+    version = "0.1.3",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Facebook API",

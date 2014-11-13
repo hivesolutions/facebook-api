@@ -39,7 +39,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import appier
 
-from facebook import user
+from . import user
 
 BASE_URL = "https://graph.facebook.com/"
 """ The default base url to be used when no other

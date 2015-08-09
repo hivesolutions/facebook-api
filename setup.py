@@ -45,7 +45,7 @@ setuptools.setup(
     version = "0.1.5",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
-    description = "Facebook API",
+    description = "Facebook API Client",
     license = "GNU General Public License (GPL), Version 3",
     keywords = "facebook api",
     url = "http://facebook_api.hive.pt",

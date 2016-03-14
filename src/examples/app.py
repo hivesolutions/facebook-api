@@ -43,8 +43,12 @@ from . import base
 
 class FacebookApp(appier.WebApp):
 
-    def __init__(self):
-        appier.WebApp.__init__(self, name = "facebook")
+    def __init__(self, *args, **kwargs):
+        appier.WebApp.__init__(
+            self,
+            name = "facebook",
+            *args, **kwargs
+        )
 
     @appier.route("/", "GET")
     def index(self):

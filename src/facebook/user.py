@@ -41,5 +41,6 @@ class UserApi(object):
 
     def self_user(self, fields = None):
         url = self.base_url + "me"
+        if fields: fields = ",".join(fields)
         contents = self.get(url, fields = fields)
         return contents

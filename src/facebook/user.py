@@ -39,7 +39,7 @@ __license__ = "Apache License, Version 2.0"
 
 class UserApi(object):
 
-    def self_user(self):
+    def self_user(self, fields = None):
         url = self.base_url + "me"
-        contents = self.get(url)
+        contents = self.get(url, fields = fields)
         return contents

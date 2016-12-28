@@ -94,3 +94,5 @@ class FacebookApp(appier.WebApp):
 if __name__ == "__main__":
     app = FacebookApp()
     app.serve()
+else:
+    __path__ = []

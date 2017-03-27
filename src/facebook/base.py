@@ -104,9 +104,12 @@ class Api(
             redirect_uri = self.redirect_url,
             code = code
         )
-        contents = contents.decode("utf-8")
-        contents = appier.legacy.parse_qs(contents)
-        self.access_token = contents["access_token"][0]
+        if appier.legacy.is_bytes(contents):
+            contents = contents.decode("utf-8")
+            contents = appier.legacy.parse_qs(contents)
+            self.access_token = contents["access_token"][0]
+        else:
+            self.access_token = contents["access_token"]
         self.trigger("access_token", self.access_token)
         if long: self.access_token = self.oauth_long_lived(self.access_token)
         return self.access_token
@@ -122,8 +125,11 @@ class Api(
             redirect_uri = self.redirect_url,
             fb_exchange_token = short_token,
         )
-        contents = contents.decode("utf-8")
-        contents = appier.legacy.parse_qs(contents)
-        self.access_token = contents["access_token"][0]
+        if appier.legacy.is_bytes(contents):
+            contents = contents.decode("utf-8")
+            contents = appier.legacy.parse_qs(contents)
+            self.access_token = contents["access_token"][0]
+        else:
+            self.access_token = contents["access_token"]
         self.trigger("access_token", self.access_token)
         return self.access_token

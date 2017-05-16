@@ -48,7 +48,7 @@ setuptools.setup(
     description = "Facebook API Client",
     license = "Apache License, Version 2.0",
     keywords = "facebook api",
-    url = "http://facebook_api.hive.pt",
+    url = "http://facebook-api.hive.pt",
     zip_safe = False,
     packages = [
         "facebook"

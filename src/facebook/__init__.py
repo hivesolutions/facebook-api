@@ -37,5 +37,5 @@ __license__ = "Apache License, Version 2.0"
 from . import base
 from . import user
 
-from .base import BASE_URL, Api
-from .user import UserApi
+from .base import BASE_URL, API
+from .user import UserAPI

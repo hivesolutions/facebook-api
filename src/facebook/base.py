@@ -61,7 +61,7 @@ SCOPE = (
     "email",
 )
 """ The list of permissions to be used to create the
-scope string for the oauth value """
+scope string for the OAuth value """
 
 class API(
     appier.OAuth2API,

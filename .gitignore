@@ -5,4 +5,4 @@ session.shelve*
 
 /dist
 /build
-/src/facebook_api.egg-info
+/src/facebook-api.egg-info

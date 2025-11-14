@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Facebook API
-# Copyright (c) 2008-2020 Hive Solutions Lda.
+# Copyright (c) 2008-2025 Hive Solutions Lda.
 #
 # This file is part of Hive Facebook API.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2020 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2025 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -57,16 +48,12 @@ REDIRECT_URL = "http://localhost:8080/oauth"
 """ The redirect URL used as default (fallback) value
 in case none is provided to the API (client) """
 
-SCOPE = (
-    "email",
-)
+SCOPE = ("email",)
 """ The list of permissions to be used to create the
 scope string for the OAuth value """
 
-class API(
-    appier.OAuth2API,
-    user.UserAPI
-):
+
+class API(appier.OAuth2API, user.UserAPI):
 
     def __init__(self, *args, **kwargs):
         appier.OAuth2API.__init__(self, *args, **kwargs)
@@ -80,29 +67,30 @@ class API(
         self.scope = kwargs.get("scope", SCOPE)
         self.access_token = kwargs.get("access_token", None)
 
-    def oauth_authorize(self, state = None):
+    def oauth_authorize(self, state=None):
         url = "https://www.facebook.com/dialog/oauth"
         values = dict(
-            client_id = self.client_id,
-            redirect_uri = self.redirect_url,
-            response_type = "code",
-            scope = " ".join(self.scope)
+            client_id=self.client_id,
+            redirect_uri=self.redirect_url,
+            response_type="code",
+            scope=" ".join(self.scope),
         )
-        if state: values["state"] = state
+        if state:
+            values["state"] = state
         data = appier.legacy.urlencode(values)
         url = url + "?" + data
         return url
 
-    def oauth_access(self, code, long = True):
+    def oauth_access(self, code, long=True):
         url = self.base_url + "oauth/access_token"
         contents = self.post(
             url,
-            token = False,
-            client_id = self.client_id,
-            client_secret = self.client_secret,
-            grant_type = "authorization_code",
-            redirect_uri = self.redirect_url,
-            code = code
+            token=False,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            grant_type="authorization_code",
+            redirect_uri=self.redirect_url,
+            code=code,
         )
         if appier.legacy.is_bytes(contents):
             contents = contents.decode("utf-8")
@@ -111,19 +99,20 @@ class API(
         else:
             self.access_token = contents["access_token"]
         self.trigger("access_token", self.access_token)
-        if long: self.access_token = self.oauth_long_lived(self.access_token)
+        if long:
+            self.access_token = self.oauth_long_lived(self.access_token)
         return self.access_token
 
     def oauth_long_lived(self, short_token):
         url = self.base_url + "oauth/access_token"
         contents = self.post(
             url,
-            token = False,
-            client_id = self.client_id,
-            client_secret = self.client_secret,
-            grant_type = "fb_exchange_token",
-            redirect_uri = self.redirect_url,
-            fb_exchange_token = short_token,
+            token=False,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            grant_type="fb_exchange_token",
+            redirect_uri=self.redirect_url,
+            fb_exchange_token=short_token,
         )
         if appier.legacy.is_bytes(contents):
             contents = contents.decode("utf-8")

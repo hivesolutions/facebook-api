@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Facebook API
-# Copyright (c) 2008-2020 Hive Solutions Lda.
+# Copyright (c) 2008-2025 Hive Solutions Lda.
 #
 # This file is part of Hive Facebook API.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2020 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2025 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,9 +32,10 @@ import appier
 
 import facebook
 
+
 def get_api():
     return facebook.API(
-        client_id = appier.conf("FB_ID"),
-        client_secret = appier.conf("FB_SECRET"),
-        redirect_url = appier.conf("FB_REDIRECT_URL")
+        client_id=appier.conf("FB_ID"),
+        client_secret=appier.conf("FB_SECRET"),
+        redirect_url=appier.conf("FB_REDIRECT_URL"),
     )

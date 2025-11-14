@@ -42,6 +42,7 @@ setuptools.setup(
     url="http://facebook-api.hive.pt",
     zip_safe=False,
     packages=["facebook"],
+    test_suite="facebook.test",
     package_dir={"": os.path.normpath("src")},
     install_requires=["appier"],
     classifiers=[
